@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Parking Slots · CPVTS{% endblock %}
+{% block content %}
+<section class="panel occupancy-panel">
+    <div class="panel-head">
+        <div>
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <path d="M3 9h18"></path>
+                    <path d="M3 15h18"></path>
+                    <path d="M9 3v18"></path>
+                    <path d="M15 3v18"></path>
+                </svg>
+                Campus Parking Bays Overview
+            </h2>
+            <p>Live visual state and occupancy of all campus parking bays</p>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span class="pill">
+                {{ dashboard.occupied_slots }} occupied · {{ dashboard.available_slots }} available
+            </span>
+        </div>
+    </div>
+</section>
+
+<section class="panel parking-3d-panel">
+    <div class="panel-head" style="margin-bottom: 14px;">
+        <div>
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                Interactive 3D Bay Visualizer
+            </h2>
+            <p>3D spatial map of allocated bikes and cars across Zone A &amp; Zone B</p>
+        </div>
+        <div class="parking-3d-controls">
+            <div class="btn-group">
+                <button type="button" class="view-btn active" data-view="isometric" title="Isometric 3D Perspective">Isometric</button>
+                <button type="button" class="view-btn" data-view="topdown" title="Top-Down Overhead Plan">Top-Down</button>
+                <button type="button" class="view-btn" data-view="perspective" title="Ground Perspective">Ground 3D</button>
+            </div>
+            <button type="button" class="view-btn" id="resetCameraBtn" title="Reset Camera Angle">Reset</button>
+        </div>
+    </div>
+
+    <div class="parking-3d-canvas-container" id="parking3dContainer">
+        <div class="parking-3d-hud" id="parking3dHud" style="display: none;"></div>
+        <div class="parking-3d-legend">
+            <span class="legend-item"><span class="legend-dot vacant"></span> Vacant Bay</span>
+            <span class="legend-item"><span class="legend-dot bike"></span> Parked Bike (Zone A)</span>
+            <span class="legend-item"><span class="legend-dot car"></span> Parked Car (Zone B)</span>
+            <span class="legend-item"><span class="legend-dot reserved"></span> VIP/Emergency Reserved</span>
+        </div>
+        <div class="parking-3d-hint">
+            <span>🖱️ Drag to rotate · Scroll to zoom · Click any 3D vehicle or bay for details</span>
+        </div>
+    </div>
+</section>
+
+<section class="zones">
+    {% include "_zones.html" %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    if (window.Parking3D) {
+        window.Parking3D.init("parking3dContainer");
+    }
+</script>
+{% endblock %}

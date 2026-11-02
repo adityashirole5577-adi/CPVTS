@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · CPVTS{% endblock %}
+{% block content %}
+<section class="stats-grid" id="statsGrid">
+    <article class="stat-card primary-accent">
+        <div class="stat-card-top">
+            <span>Total Slots</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>
+            </div>
+        </div>
+        <strong id="statTotal">{{ dashboard.total_slots }}</strong>
+        <p class="stat-card-sub">Campus capacity</p>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-card-top">
+            <span>Two-Wheeler Slots</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5L9 9l3-3 3 3 3 6.5"/></svg>
+            </div>
+        </div>
+        <strong id="statTwo">{{ dashboard.two_wheeler_slots }}</strong>
+        <p class="stat-card-sub">Zone A bays</p>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-card-top">
+            <span>Four-Wheeler Slots</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+            </div>
+        </div>
+        <strong id="statFour">{{ dashboard.four_wheeler_slots }}</strong>
+        <p class="stat-card-sub">Zone B bays</p>
+    </article>
+
+    <article class="stat-card occupied">
+        <div class="stat-card-top">
+            <span>Occupied Slots</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+        </div>
+        <strong id="statOccupied">{{ dashboard.occupied_slots }}</strong>
+        <p class="stat-card-sub">Currently parked</p>
+    </article>
+
+    <article class="stat-card available">
+        <div class="stat-card-top">
+            <span>Available Slots</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+        </div>
+        <strong id="statAvailable">{{ dashboard.available_slots }}</strong>
+        <p class="stat-card-sub">Vacant & ready</p>
+    </article>
+
+    <article class="stat-card available">
+        <div class="stat-card-top">
+            <span>Two-Wheeler Available</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><polyline points="15 6 12 11 9 11"/></svg>
+            </div>
+        </div>
+        <strong id="statTwoAvail">{{ dashboard.two_wheeler_available }}</strong>
+        <p class="stat-card-sub">Zone A free</p>
+    </article>
+
+    <article class="stat-card available">
+        <div class="stat-card-top">
+            <span>Four-Wheeler Available</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><path d="M5 11l2-4h10l2 4"/><rect x="3" y="11" width="18" height="6" rx="2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+            </div>
+        </div>
+        <strong id="statFourAvail">{{ dashboard.four_wheeler_available }}</strong>
+        <p class="stat-card-sub">Zone B free</p>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-card-top">
+            <span>Vehicles Parked Today</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+        </div>
+        <strong id="statToday">{{ dashboard.vehicles_today }}</strong>
+        <p class="stat-card-sub">Total checked in today</p>
+    </article>
+
+    <article class="stat-card gold">
+        <div class="stat-card-top">
+            <span>Fees Collected</span>
+            <div class="stat-card-icon">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+        </div>
+        <strong id="statFees">₹{{ dashboard.fees_collected }}</strong>
+        <p class="stat-card-sub">Today's total revenue</p>
+    </article>
+</section>
+
+<section class="panel occupancy-panel">
+    <div class="panel-head">
+        <div>
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                </svg>
+                Live Occupancy
+            </h2>
+            <p>Real-time campus parking bay utilization</p>
+        </div>
+        <span class="pill" id="occupancyPill">{{ dashboard.occupancy_percent }}% occupied</span>
+    </div>
+    <div class="progress">
+        <div class="progress-bar" id="occupancyBar" style="width: {{ dashboard.occupancy_percent }}%"></div>
+    </div>
+    <div class="occupancy-meta-row">
+        <span>Capacity: {{ dashboard.total_slots }} Bays</span>
+        <span>{{ dashboard.occupied_slots }} Occupied · {{ dashboard.available_slots }} Available</span>
+    </div>
+</section>
+
+<section class="panel parking-3d-panel">
+    <div class="panel-head" style="margin-bottom: 14px;">
+        <div>
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                Interactive 3D Campus Parking Lot
+            </h2>
+            <p>Live 3D spatial visualization of parked bikes and cars across Zone A &amp; Zone B</p>
+        </div>
+        <div class="parking-3d-controls">
+            <div class="btn-group">
+                <button type="button" class="view-btn active" data-view="isometric" title="Isometric 3D Perspective">Isometric</button>
+                <button type="button" class="view-btn" data-view="topdown" title="Top-Down Overhead Plan">Top-Down</button>
+                <button type="button" class="view-btn" data-view="perspective" title="Ground Perspective">Ground 3D</button>
+            </div>
+            <button type="button" class="view-btn" id="resetCameraBtn" title="Reset Camera Angle">Reset</button>
+        </div>
+    </div>
+
+    <div class="parking-3d-canvas-container" id="parking3dContainer">
+        <div class="parking-3d-hud" id="parking3dHud" style="display: none;"></div>
+        <div class="parking-3d-legend">
+            <span class="legend-item"><span class="legend-dot vacant"></span> Vacant Bay</span>
+            <span class="legend-item"><span class="legend-dot bike"></span> Parked Bike (Zone A)</span>
+            <span class="legend-item"><span class="legend-dot car"></span> Parked Car (Zone B)</span>
+            <span class="legend-item"><span class="legend-dot reserved"></span> VIP/Emergency Reserved</span>
+        </div>
+        <div class="parking-3d-hint">
+            <span>🖱️ Drag to rotate · Scroll to zoom · Click any 3D vehicle or bay for details</span>
+        </div>
+    </div>
+</section>
+
+<section class="zones" id="zoneBoards">
+    {% include "_zones.html" %}
+</section>
+
+<section class="panel">
+    <div class="panel-head">
+        <div>
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                Recent Activity
+            </h2>
+            <p>Real-time vehicle check-in and checkout transaction log</p>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table" id="recentTable">
+            <thead>
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Slot</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Entry</th>
+                    <th>Exit</th>
+                    <th>Fee</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if dashboard.recent_transactions %}
+                    {% for txn in dashboard.recent_transactions %}
+                    <tr>
+                        <td class="vehicle-col">{{ txn.vehicle_number }}</td>
+                        <td><span class="slot-tag">{{ txn.slot_id }}</span></td>
+                        <td>{{ txn.vehicle_type }}</td>
+                        <td><span class="cat-pill {{ txn.owner_category|lower }}">{{ txn.owner_category }}</span></td>
+                        <td>{{ txn.entry_time_display }}</td>
+                        <td>{{ txn.exit_time_display }}</td>
+                        <td class="fee-col">{{ txn.fee_display }}</td>
+                        <td><span class="status-chip {{ txn.status|lower }}">{{ txn.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr class="empty-row"><td colspan="8">No parking activity yet. Check in the first vehicle to begin.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    if (window.CPVTS) {
+        CPVTS.startDashboardRefresh();
+    }
+</script>
+{% endblock %}

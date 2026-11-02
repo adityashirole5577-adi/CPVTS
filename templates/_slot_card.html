@@ -1,0 +1,20 @@
+<article class="slot-card {{ 'occupied' if slot.status == 'Occupied' else ('reserved' if slot.status == 'Reserved' else 'available') }}">
+    <header>
+        <strong>{{ slot.slot_id }}</strong>
+        <span>{{ 'OCCUPIED (VIP)' if (slot.status == 'Occupied' and slot.is_reserved) else ('RESERVED' if slot.status == 'Reserved' else slot.status|upper) }}</span>
+    </header>
+    {% if slot.status == 'Occupied' %}
+        <p class="slot-vehicle">{{ slot.vehicle_number }}</p>
+        <p class="slot-time">Entry {{ slot.entry_time_display }}</p>
+        <p class="slot-category">
+            <span class="cat-chip {{ slot.owner_category|lower|replace('/', '-') }}">{{ slot.owner_category }}</span>
+            {% if slot.is_reserved %}<span class="cat-chip reserved" style="margin-left: 4px;">VIP Bay</span>{% endif %}
+        </p>
+    {% elif slot.status == 'Reserved' %}
+        <p class="slot-reserved-badge">VIP / Emergency</p>
+        <p class="slot-time">Reserved by Security</p>
+        <p class="slot-category"><span class="cat-chip reserved">Official VIP</span></p>
+    {% else %}
+        <p class="muted">Ready for assignment</p>
+    {% endif %}
+</article>

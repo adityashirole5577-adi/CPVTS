@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Reserve VIP Slot · CPVTS{% endblock %}
+{% block content %}
+<div class="split">
+    <section class="panel form-panel">
+        <div class="panel-head">
+            <div>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Fast-Track VIP / Emergency Reservation
+                </h2>
+                <p>Reserve a dedicated bay for official guests or emergency vehicles, or release an existing reservation.</p>
+            </div>
+        </div>
+
+        <form method="post" action="{{ url_for('reserve_slot') }}" id="reserveForm" novalidate>
+            <div class="security-banner" style="margin-bottom: 16px; padding: 10px 14px; background: var(--primary-light); border: 1px solid var(--primary-border); border-radius: 8px; font-size: 0.85rem; color: var(--primary-hover); display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span><strong>Security Operator Console:</strong> Reserved bays are strictly excluded from regular vehicle allocation.</span>
+            </div>
+
+            <label>
+                <span>Select Parking Bay</span>
+                <select name="slot_id" id="slot_id" required autofocus>
+                    <option value="">-- Choose a Parking Bay --</option>
+                    <optgroup label="Zone A: Two-Wheeler Bays (T-01 to T-10)">
+                        {% for s in dashboard.two_wheeler_zone %}
+                        <option value="{{ s.slot_id }}" {% if selected_slot == s.slot_id %}selected{% endif %}>
+                            {{ s.slot_id }} — {% if s.status == 'Reserved' %}Reserved for VIP/Emergency{% elif s.status == 'Occupied' %}Occupied ({{ s.vehicle_number }}){% else %}Available for normal parking{% endif %}
+                        </option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="Zone B: Four-Wheeler Bays (F-01 to F-05)">
+                        {% for s in dashboard.four_wheeler_zone %}
+                        <option value="{{ s.slot_id }}" {% if selected_slot == s.slot_id %}selected{% endif %}>
+                            {{ s.slot_id }} — {% if s.status == 'Reserved' %}Reserved for VIP/Emergency{% elif s.status == 'Occupied' %}Occupied ({{ s.vehicle_number }}){% else %}Available for normal parking{% endif %}
+                        </option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
+                <span class="label-hint">Select a bay to reserve for VIP/Emergency or release back to normal parking</span>
+            </label>
+
+            <fieldset>
+                <legend>Reservation Action</legend>
+                <div class="segmented-group">
+                    <label class="segmented-option">
+                        <input type="radio" name="action" value="reserve" id="actionReserve" checked>
+                        <span>Reserve for VIP/Emergency</span>
+                    </label>
+                    <label class="segmented-option">
+                        <input type="radio" name="action" value="unreserve" id="actionUnreserve">
+                        <span>Release Reservation (Unreserve)</span>
+                    </label>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn primary" id="submitBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Confirm Action
+            </button>
+        </form>
+    </section>
+
+    <section class="panel info-card">
+        <div class="panel-head">
+            <div>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        <path d="M3 9h18"></path>
+                        <path d="M9 21V9"></path>
+                    </svg>
+                    Bay Reservation Status
+                </h2>
+                <p>Live status of all bays across Two-Wheeler and Four-Wheeler zones</p>
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill" style="background: var(--amber-soft); color: var(--amber-text); border: 1px solid var(--amber-border);">
+                    {{ dashboard.reserved_slots }} VIP Reserved
+                </span>
+                <span class="pill">
+                    {{ dashboard.available_slots }} Normal Available
+                </span>
+            </div>
+        </div>
+
+        <div class="table-wrap" style="max-height: 480px; overflow-y: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Slot</th>
+                        <th>Zone / Type</th>
+                        <th>Current Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in dashboard.slots %}
+                    <tr>
+                        <td><strong>{{ s.slot_id }}</strong></td>
+                        <td>{{ s.vehicle_type }}</td>
+                        <td>
+                            {% if s.status == 'Reserved' %}
+                                <span class="status-chip gold">Reserved for VIP/Emergency</span>
+                            {% elif s.status == 'Occupied' and s.is_reserved %}
+                                <span class="status-chip occupied">Occupied VIP ({{ s.vehicle_number }})</span>
+                            {% elif s.status == 'Occupied' %}
+                                <span class="status-chip occupied">Occupied ({{ s.vehicle_number }})</span>
+                            {% else %}
+                                <span class="status-chip available">Available for normal parking</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if s.status == 'Reserved' %}
+                                <div style="display: flex; gap: 4px;">
+                                    <a href="{{ url_for('entry', slot_id=s.slot_id, category='VIP/Emergency') }}" class="btn-sm btn-primary" style="text-decoration: none; padding: 4px 8px; font-size: 0.76rem;">
+                                        Park VIP
+                                    </a>
+                                    <button type="button" class="btn-sm btn-secondary quick-slot-btn" data-slot="{{ s.slot_id }}" data-action="unreserve" style="padding: 4px 8px; font-size: 0.76rem;">
+                                        Release
+                                    </button>
+                                </div>
+                            {% elif s.status == 'Available' %}
+                                <button type="button" class="btn-sm btn-primary quick-slot-btn" data-slot="{{ s.slot_id }}" data-action="reserve">
+                                    Reserve
+                                </button>
+                            {% elif s.is_reserved %}
+                                <span style="font-size: 0.8rem; color: var(--amber-text); font-weight: 600;">VIP In Use</span>
+                            {% else %}
+                                <span style="font-size: 0.8rem; color: var(--muted);">Occupied</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("reserveForm");
+        const slotSelect = document.getElementById("slot_id");
+        const actionReserve = document.getElementById("actionReserve");
+        const actionUnreserve = document.getElementById("actionUnreserve");
+
+        document.querySelectorAll(".quick-slot-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const slot = btn.getAttribute("data-slot");
+                const act = btn.getAttribute("data-action");
+                if (slotSelect) slotSelect.value = slot;
+                if (act === "unreserve" && actionUnreserve) actionUnreserve.checked = true;
+                if (act === "reserve" && actionReserve) actionReserve.checked = true;
+                if (form) form.scrollIntoView({ behavior: "smooth" });
+            });
+        });
+
+        if (form) {
+            form.addEventListener("submit", function (e) {
+                if (!slotSelect.value) {
+                    e.preventDefault();
+                    let box = form.querySelector(".client-error");
+                    if (!box) {
+                        box = document.createElement("div");
+                        box.className = "flash error client-error";
+                        form.prepend(box);
+                    }
+                    box.innerHTML = '<span>Please select a parking bay to proceed.</span>';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+

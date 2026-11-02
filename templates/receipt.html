@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Parking Receipt · CPVTS{% endblock %}
+{% block content %}
+<div class="receipt-wrapper">
+    <section class="receipt-actions no-print">
+        <button type="button" class="btn primary" onclick="window.print()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print Receipt
+        </button>
+        <a class="btn ghost" href="{{ url_for('dashboard') }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to dashboard
+        </a>
+        <a class="btn secondary" href="{{ url_for('entry') }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New Check-In
+        </a>
+    </section>
+
+    <article class="receipt" id="receipt">
+        <header>
+            <p class="eyebrow">CAMPUS PARKING SYSTEM</p>
+            <h2>PARKING RECEIPT</h2>
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Official Campus Checkout Clearance</p>
+        </header>
+        <hr>
+        <dl>
+            <dt>Vehicle Number</dt>
+            <dd><span class="vehicle-col">{{ receipt.vehicle_number }}</span></dd>
+            <dt>Vehicle Type</dt>
+            <dd>{{ receipt.vehicle_type }}</dd>
+            <dt>Category</dt>
+            <dd><span class="cat-pill {{ receipt.owner_category|lower }}">{{ receipt.owner_category }}</span></dd>
+            <dt>Spot Assigned</dt>
+            <dd><span class="slot-tag">{{ receipt.slot_id }}</span></dd>
+            <dt>Entry Time</dt>
+            <dd>{{ receipt.entry_time_display }}</dd>
+            <dt>Exit Time</dt>
+            <dd>{{ receipt.exit_time_display }}</dd>
+            <dt>Duration</dt>
+            <dd><strong>{{ receipt.duration }} Hours</strong> ({{ receipt.entry_time_display }} to {{ receipt.exit_time_display }})</dd>
+        </dl>
+        <hr>
+        <h3>Fee Calculation</h3>
+        <ul class="fee-lines">
+            {% for line in receipt.fee_lines %}
+                <li>{{ line.text }}</li>
+            {% endfor %}
+        </ul>
+        <p class="total">TOTAL AMOUNT DUE: ₹{{ receipt.fee }}</p>
+        <hr>
+        <p class="status-line"><strong>STATUS:</strong> {{ receipt.status_line }}</p>
+        <p class="muted">Transaction #{{ receipt.id }} · {{ receipt.parking_date }} · CPVTS Campus Administration</p>
+    </article>
+</div>
+{% endblock %}

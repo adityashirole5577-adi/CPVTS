@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Campus Parking & Vehicle Tracking System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <span class="brand-mark">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+                        <path d="M9 17V7h4a3 3 0 0 1 0 6H9"></path>
+                    </svg>
+                </span>
+                <div>
+                    <strong>CPVTS</strong>
+                    <small>Campus Parking System</small>
+                    <span class="brand-status-chip">Live Active</span>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <span class="nav-category">Main Menu</span>
+                <a class="{% if page == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                    <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a class="{% if page == 'entry' %}active{% endif %}" href="{{ url_for('entry') }}">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                    <span>Vehicle Entry</span>
+                </a>
+                <a class="{% if page == 'exit' %}active{% endif %}" href="{{ url_for('exit_vehicle') }}">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    <span>Vehicle Exit</span>
+                </a>
+                <a class="{% if page == 'search' %}active{% endif %}" href="{{ url_for('search') }}">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+                    <span>Vehicle Search</span>
+                </a>
+                <a class="{% if page == 'slots' %}active{% endif %}" href="{{ url_for('slots_page') }}">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+                    <span>Parking Slots</span>
+                </a>
+                <a class="{% if page == 'reserve' %}active{% endif %}" href="{{ url_for('reserve_slot') }}">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span>Reserve VIP Slot</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button type="button" class="theme-toggle" id="themeToggle" title="Switch Theme">
+                    <span class="theme-toggle-left">
+                        <svg viewBox="0 0 24 24" id="themeIcon">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <span id="themeLabel">Toggle Theme</span>
+                    </span>
+                    <span class="theme-pill-badge" id="themeBadge">Theme</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="main">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button type="button" class="menu-btn" id="menuBtn" aria-label="Open navigation menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1>Campus Parking &amp; Vehicle Tracking System</h1>
+                        <p class="subtitle">Automatic slot allocation · Live occupancy · Receipts</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <span class="live-badge">Live Monitoring</span>
+                </div>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-stack" id="flashStack">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}" role="status">
+                                {% if category == 'success' %}
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                {% else %}
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                {% endif %}
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <script src="{{ url_for('static', filename='js/three.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/parking3d.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

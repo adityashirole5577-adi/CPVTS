@@ -1,0 +1,32 @@
+<div class="zone-block">
+    <div class="zone-header">
+        <div class="zone-title-wrap">
+            <span class="zone-badge two-wheeler">Zone A</span>
+            <h2>Two-Wheeler Zone</h2>
+        </div>
+        <span class="zone-capacity-pill">10 Bays (T-01 to T-10)</span>
+    </div>
+    <div class="slot-grid">
+        {% for slot in dashboard.two_wheeler_zone %}
+            {% include "_slot_card.html" %}
+        {% else %}
+            <p class="empty-state">Two-wheeler slots are not initialized.</p>
+        {% endfor %}
+    </div>
+</div>
+<div class="zone-block">
+    <div class="zone-header">
+        <div class="zone-title-wrap">
+            <span class="zone-badge four-wheeler">Zone B</span>
+            <h2>Four-Wheeler Zone</h2>
+        </div>
+        <span class="zone-capacity-pill">5 Bays (F-01 to F-05)</span>
+    </div>
+    <div class="slot-grid">
+        {% for slot in dashboard.four_wheeler_zone %}
+            {% include "_slot_card.html" %}
+        {% else %}
+            <p class="empty-state">Four-wheeler slots are not initialized.</p>
+        {% endfor %}
+    </div>
+</div>
